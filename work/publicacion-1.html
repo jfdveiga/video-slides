@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Video 1 — Ejemplo</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#000}
+.video-container{position:relative;width:100%;max-width:608px;height:100vh;max-height:1080px;margin:0 auto;overflow:hidden;background:#000}
+.text-layer{position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2rem;text-align:center}
+.text-line{font-family:'Poppins',sans-serif;font-weight:300;font-size:clamp(1.15rem,4.2vw,1.5rem);color:#fff;opacity:0;position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);width:82%;max-width:460px;line-height:1.7;letter-spacing:.03em;transition:opacity .8s ease-out}
+.text-line.typewriter::after{content:'|';display:inline-block;animation:blink .7s step-end infinite;color:rgba(255,255,255,0.7);font-weight:300;margin-left:2px}
+.text-line.typewriter.done::after{display:none}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.logo-area{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);z-index:3;opacity:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:1.5rem}
+.logo-area.show{animation:logoRotateIn .9s ease-out forwards}
+@keyframes logoRotateIn{0%{opacity:0;transform:translate(-50%,-50%) rotate(-8deg) scale(.6)}100%{opacity:1;transform:translate(-50%,-50%) rotate(0deg) scale(1)}}
+.logo-text{font-family:'Poppins',sans-serif;font-size:clamp(2.5rem,8vw,4rem);font-weight:600;color:#fff;letter-spacing:-.02em}
+.logo-dot{color:#3b82f6}
+.bottom-info{position:absolute;bottom:8rem;left:0;width:100%;text-align:center;z-index:4;opacity:0}
+.bottom-tagline{font-family:'Poppins',sans-serif;font-weight:300;font-size:clamp(1.1rem,3.2vw,1.5rem);color:#fff;letter-spacing:.15em;margin-bottom:1rem}
+.bottom-url{font-family:'Poppins',sans-serif;font-weight:300;font-size:clamp(.7rem,2vw,.85rem);color:rgba(255,255,255,0.4);letter-spacing:.25em}
+.progress-bar{position:absolute;bottom:3%;left:0;height:2px;z-index:10;background:rgba(255,255,255,0.15);width:0;border-radius:0 2px 2px 0}
+</style>
+</head>
+<body>
+<div class="video-container" id="app">
+<div class="text-layer">
+<div class="text-line typewriter" id="line1">Crea contenido que conecte.</div>
+<div class="text-line typewriter" id="line2">Una línea a la vez.</div>
+</div>
+<div class="logo-area" id="logoArea">
+  <div class="logo-text">mi<span class="logo-dot">.</span>marca</div>
+</div>
+<div class="bottom-info" id="bottomInfo">
+<div class="bottom-tagline">Ideas que inspiran.</div>
+<div class="bottom-url">2026 · mimarca.com</div>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+</div>
+<script>
+(function(){
+'use strict';
+const SPEED=30,VARIANCE=8;
+const TEXT1='Crea contenido que conecte.';
+const TEXT2='Una línea a la vez.';
+const line1=document.getElementById('line1'),line2=document.getElementById('line2'),logoArea=document.getElementById('logoArea'),bottomInfo=document.getElementById('bottomInfo'),progressBar=document.getElementById('progressBar');
+function typeText(el,text,startDelay,onDone){el.textContent='';el.style.opacity='1';let i=0;const type=()=>{if(i<text.length){el.textContent+=text.charAt(i);i++;setTimeout(type,SPEED+(Math.random()-.5)*2*VARIANCE)}else if(onDone){el.classList.add('done');setTimeout(onDone,0)}};setTimeout(type,startDelay*1e3)}
+function fadeIn(el,duration,delay){setTimeout(()=>{el.style.transition=`opacity ${duration}s ease-out`;el.style.opacity='1'},delay*1e3)}
+function startTimeline(){
+typeText(line1,TEXT1,.3,()=>{setTimeout(()=>{typeText(line2,TEXT2,0,()=>{setTimeout(()=>{line2.style.opacity='0';logoArea.classList.add('show');logoArea.style.opacity='1';fadeIn(bottomInfo,.6,.35)},1800)});line1.style.opacity='0'},1200)})}
+function animateProgress(){const start=performance.now(),duration=8500;function tick(now){const pct=Math.min(1,(now-start)/duration);progressBar.style.width=(pct*100)+'%';if(pct<1)requestAnimationFrame(tick)}requestAnimationFrame(tick)}
+let started=false;
+document.addEventListener('click',function(){if(started)return;started=true;startTimeline();animateProgress()});
+})();
+</script>
+</body>
+</html>
