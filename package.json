@@ -1,0 +1,14 @@
+{
+  "name": "video-slides",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Graba videos 9:16 desde HTML animado con Playwright",
+  "scripts": {
+    "record": "node record.mjs",
+    "init": "node record.mjs --init"
+  },
+  "devDependencies": {
+    "playwright": "^1.52.0"
+  }
+}
