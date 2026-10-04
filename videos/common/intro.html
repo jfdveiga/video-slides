@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Intro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#000}
+.wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:84%;max-width:480px}
+.title{font-family:'Poppins',sans-serif;font-weight:600;font-size:clamp(2rem,7vw,3rem);color:#fff;letter-spacing:.02em;opacity:0;transform:translateY(14px);transition:opacity .7s ease-out,transform .7s ease-out}
+.title.in{opacity:1;transform:translateY(0)}
+.sub{font-family:'Poppins',sans-serif;font-weight:300;font-size:clamp(.9rem,2.8vw,1.1rem);color:rgba(255,255,255,.6);letter-spacing:.22em;text-transform:uppercase;margin-top:1.1rem;opacity:0;transition:opacity .7s ease-out .25s}
+.sub.in{opacity:1}
+.bar{width:0;height:2px;margin:1.6rem auto 0;background:#00ff88;box-shadow:0 0 12px rgba(0,255,136,.5);transition:width .9s ease-out .3s}
+.bar.in{width:120px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="title" id="title">HTML &rarr; VIDEO</div>
+<div class="sub" id="sub">Render determinista &middot; 30 fps</div>
+<div class="bar" id="bar"></div>
+</div>
+<script>
+window.__SCENE_DURATION_MS = 2500;
+(function(){
+'use strict';
+let started=false;
+document.addEventListener('click',function(){
+  if(started)return; started=true;
+  document.getElementById('title').classList.add('in');
+  document.getElementById('sub').classList.add('in');
+  document.getElementById('bar').classList.add('in');
+});
+})();
+</script>
+</body>
+</html>

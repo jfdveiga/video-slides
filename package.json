@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Graba videos 9:16 desde HTML animado con Playwright",
+  "description": "Genera videos 9:16 desde proyectos de escenas HTML con Playwright + FFmpeg",
   "scripts": {
-    "record": "node record.mjs",
-    "init": "node record.mjs --init"
+    "video": "node video.mjs"
   },
   "devDependencies": {
     "playwright": "^1.52.0"

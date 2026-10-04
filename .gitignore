@@ -1,4 +1,23 @@
 node_modules
-work/output/
-*.webm
-*.mp4
+
+# Salidas generadas (cualquier carpeta output/, incluida la raíz de pruebas)
+output/
+
+# Intermedios de captura/build
+videos/**/.build/
+videos/**/.build-render/
+
+# Temporales de timecut / render / pruebas
+videos/**/timecut-temp-*/
+videos/**/.tc-*
+videos/**/*-autostart.html
+videos/**/_*.png
+.sc-frames/
+.debug-*/
+.test-frames/
+*.tcframes/
+_p*.png
+_*.png
+debug-*.mjs
+*.log
+*.tmp

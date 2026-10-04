@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Card — clásico</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Poppins',sans-serif}
+.wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:84%;max-width:480px}
+.tag{font-size:clamp(.7rem,2.2vw,.85rem);letter-spacing:.35em;text-transform:uppercase;color:#00ff88;opacity:0;transition:opacity .6s ease-out}
+.tag.in{opacity:1}
+.title{font-weight:600;font-size:clamp(1.7rem,6.5vw,2.6rem);color:#fff;margin-top:.9rem;line-height:1.2;opacity:0;transform:translateY(12px);transition:opacity .6s ease-out .1s,transform .6s ease-out .1s}
+.title.in{opacity:1;transform:translateY(0)}
+.line{width:0;height:2px;background:#00ff88;margin:1.3rem auto 0;transition:width .7s ease-out .25s}
+.line.in{width:80px}
+.sub{font-weight:300;font-size:clamp(.9rem,2.8vw,1.05rem);color:rgba(255,255,255,.55);margin-top:1.1rem;letter-spacing:.05em;opacity:0;transition:opacity .6s ease-out .4s}
+.sub.in{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="tag" id="tag">Método anterior</div>
+<div class="title" id="title">Render clásico</div>
+<div class="line" id="line"></div>
+<div class="sub" id="sub">Grabación en tiempo real (recordVideo)</div>
+</div>
+<script>window.__SCENE_DURATION_MS=2200;(function(){let s=false;document.addEventListener('click',function(){if(s)return;s=true;['tag','title','line','sub'].forEach(function(id){document.getElementById(id).classList.add('in')})})})();</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+html,body{margin:0;background:#000;width:100%;height:100%;overflow:hidden;font-family:sans-serif}
+#t{position:absolute;top:45%;left:0;width:100%;text-align:center;color:#fff;font-size:1.6rem;opacity:0;transition:opacity .8s ease-out}
+</style>
+</head>
+<body>
+<div id="t">Fin · lexikoverse.com</div>
+<script>
+window.__SCENE_DURATION_MS = 1500;
+let started = false;
+function start(){
+  if (started) return; started = true;
+  document.getElementById('t').style.opacity = '1';
+}
+document.addEventListener('click', start);
+</script>
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Post 11 — The Numbers of the Secret · LexikoVerse</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Poppins',sans-serif}
+.video-container{position:relative;width:100%;max-width:608px;height:100vh;max-height:1080px;margin:0 auto;overflow:hidden;background:#000}
+
+.vignette{position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.7) 100%)}
+.scanlines{position:absolute;inset:0;z-index:4;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.012) 2px,rgba(255,255,255,.012) 4px)}
+
+.scene{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2rem;opacity:0;pointer-events:none;transition:opacity .6s ease-out}
+.scene.active{opacity:1}
+
+/* ── BG texture ── */
+.bg-texture{position:absolute;inset:0;z-index:1;overflow:hidden;opacity:0;transition:opacity 1.2s ease-out;pointer-events:none}
+.bg-texture.show{opacity:1}
+.bg-texture .blur{filter:blur(5px) brightness(.5) saturate(.6);font-family:'Consolas',monospace;position:absolute;width:140%;height:140%;top:-20%;left:-20%}
+.bg-texture .overlay-dark{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.4) 0%,rgba(0,0,0,.05) 35%,rgba(0,0,0,.05) 65%,rgba(0,0,0,.5) 100%)}
+
+/* ── Scene 1 ── */
+.logo-flash{position:absolute;width:60vw;max-width:350px;opacity:0;z-index:3}
+.logo-flash.flash{animation:logoFlash .4s ease-out forwards}
+@keyframes logoFlash{0%{opacity:0;transform:scale(.8)}20%{opacity:1;transform:scale(1);filter:drop-shadow(0 0 30px #00ff88)}100%{opacity:0;transform:scale(1.1);filter:drop-shadow(0 0 60px #00ff88)}}
+.mystery-text{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:clamp(1.1rem,4vw,1.6rem);color:#fff;opacity:0;position:absolute;width:82%;max-width:500px;text-align:center;line-height:1.7;letter-spacing:.06em;z-index:3}
+.mystery-text.show{opacity:1;transition:opacity .8s ease-out .3s}
+.mystery-text .highlight{color:#00ff88;text-shadow:0 0 25px rgba(0,255,136,.4)}
+.mystery-text .dim{color:rgba(255,255,255,.35)}
+
+.big-num{font-family:'Space Grotesk',sans-serif;font-size:clamp(3.5rem,14vw,6.5rem);font-weight:700;line-height:1;opacity:0;transform:scale(.6);transition:all .5s cubic-bezier(.34,1.56,.64,1);z-index:3;position:relative}
+.big-num.show{opacity:1;transform:scale(1)}
+.big-num.green{color:#00ff88;text-shadow:0 0 40px rgba(0,255,136,.25),0 0 80px rgba(0,255,136,.1)}
+.big-label{font-family:'Poppins',sans-serif;font-size:clamp(1.16rem,3.6vw,1.55rem);color:rgba(255,255,255,.88);font-weight:900;text-transform:uppercase;letter-spacing:.2em;margin-top:.5rem;opacity:0;transition:opacity .6s ease-out .2s;z-index:3;position:relative;line-height:1.6}
+.big-label.show{opacity:1}
+.sub-row{margin-top:1.8rem;opacity:0;transition:opacity .6s ease-out .4s;z-index:3;position:relative;text-align:center}
+.sub-row.show{opacity:1}
+.sub-num{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,8vw,3.5rem);font-weight:700;color:#00ff88;text-shadow:0 0 30px rgba(0,255,136,.2);line-height:1}
+.sub-label{font-size:clamp(1.1rem,2.8vw,1.5rem);color:rgba(255,255,255,.92);text-transform:uppercase;letter-spacing:.2em;margin-top:.2rem;line-height:1.7;font-weight:400}
+.sub-footer{font-size:clamp(1.0rem,2.7vw,1.42rem);color:rgba(255,255,255,.84);letter-spacing:.15em;text-transform:uppercase;margin-top:.8rem;opacity:0;transition:opacity .6s ease-out .6s;z-index:3;position:relative;font-weight:400;line-height:1.8}
+.sub-footer.show{opacity:1}
+
+.dim-row{display:flex;gap:.6rem;margin-top:.8rem;opacity:0;transition:opacity .6s ease-out .5s;flex-wrap:wrap;justify-content:center;z-index:3;position:relative}
+.dim-row.show{opacity:1}
+.dim-tag{font-size:clamp(.78rem,2vw,.96rem);font-weight:700;text-transform:uppercase;letter-spacing:.12em;padding:.38rem .76rem;border-radius:4px;border:1px solid;line-height:1.2}
+.dim-tag.web{color:#ffd8ef;border-color:#ff79c680;background:#ff79c620}
+.dim-tag.mobile{color:#ffe2bd;border-color:#ffb86c80;background:#ffb86c20}
+
+.glitch-overlay{position:absolute;inset:0;z-index:6;pointer-events:none;opacity:0;background:#000}
+.glitch-overlay.active{animation:glitch .3s ease-out forwards}
+@keyframes glitch{0%{opacity:.6;transform:translate(-3px,2px) skewX(-2deg)}25%{opacity:.4;transform:translate(3px,-1px) skewX(1deg)}50%{opacity:.5;transform:translate(-2px,3px) skewX(-1deg)}75%{opacity:.3;transform:translate(2px,-2px) skewX(2deg)}100%{opacity:0;transform:translate(0,0) skewX(0)}}
+
+/* ── Live test stream ── */
+.live-tests{position:absolute;bottom:2rem;left:5%;width:90%;z-index:3;opacity:0;transition:opacity .8s ease-out}
+.live-tests.show{opacity:1}
+.live-tests .term-bar{display:flex;align-items:center;gap:.35rem;padding:.4rem .7rem;background:#0c0c0c;border:1px solid #1a2a1a;border-radius:6px 6px 0 0}
+.live-tests .term-bar .dot{width:6px;height:6px;border-radius:50%}
+.live-tests .term-bar .dot:nth-child(1){background:#ff5f56}
+.live-tests .term-bar .dot:nth-child(2){background:#ffbd2e}
+.live-tests .term-bar .dot:nth-child(3){background:#27c93f}
+.live-tests .term-bar .label{color:#3a3a3a;font-size:.62rem;margin-left:.5rem;letter-spacing:.1em;text-transform:uppercase}
+.live-tests .term-body{background:#080808;border:1px solid #1a2a1a;border-top:none;border-radius:0 0 6px 6px;padding:.7rem .8rem;height:110px;overflow:hidden;font-family:'Consolas',monospace}
+.live-tests .term-body .line{font-size:.72rem;line-height:1.6;opacity:0;animation:fadeInLine .3s ease-out forwards}
+@keyframes fadeInLine{0%{opacity:0;transform:translateY(-4px)}100%{opacity:1;transform:translateY(0)}}
+.live-tests .term-body .pass{color:#00ff88}
+.live-tests .term-body .dim{color:#3a3a3a}
+
+.terminal-text{font-family:'Consolas','Courier New',monospace;font-size:clamp(.95rem,2.8vw,1.12rem);color:#00ff88;line-height:2;text-align:left;width:82%;max-width:420px;z-index:3;position:relative}
+.terminal-text .cursor{display:inline-block;width:.58em;height:1.2em;background:#9CFFBB;margin-left:.15rem;vertical-align:text-bottom;box-shadow:0 0 8px rgba(156,255,187,.8)}
+.terminal-text .cursor.blinkoff{opacity:0}
+.terminal-cta{margin-top:2rem;font-size:clamp(.90rem,2.8vw,1.16rem);color:#dfffe8;letter-spacing:.3em;text-transform:uppercase;opacity:0;transition:opacity .8s ease-out;z-index:3;position:relative;font-weight:800;line-height:1.8;text-shadow:0 0 8px rgba(0,255,136,.4);text-align:center}
+.terminal-cta.show{opacity:1}
+.terminal-cta .web-link{display:block;color:#00ff88;font-size:clamp(1.12rem,3vw,1.42rem);font-weight:900;letter-spacing:.22em;text-transform:uppercase;text-shadow:0 0 12px rgba(0,255,136,.8);margin-top:.3rem}
+.progress-bar{position:absolute;bottom:3%;left:0;height:2px;z-index:20;background:rgba(0,255,136,.15);width:0;border-radius:0 2px 2px 0;box-shadow:0 0 8px rgba(0,255,136,.1)}
+
+@media(max-width:420px){
+  .video-container{max-width:100%;max-height:100vh}
+  .scene{padding:1.4rem}
+  .mystery-text{font-size:clamp(1.24rem,4vw,1.8rem);line-height:1.85;width:96%;max-width:420px}
+  .big-num{font-size:clamp(4rem,17vw,5rem)}
+  .big-label{font-size:clamp(1rem,4vw,1.28rem);line-height:1.45;letter-spacing:.12em;max-width:290px;margin:0 auto;font-weight:900}
+  .sub-row{margin-top:1.0rem}
+  .sub-num{font-size:clamp(1.9rem,7vw,2.5rem)}
+  .sub-label{font-size:.94rem;line-height:1.45;letter-spacing:.12em;font-weight:900}
+  .sub-footer{font-size:.88rem;line-height:1.55;width:92%;margin:0 auto;color:rgba(255,255,255,.84);font-weight:800;letter-spacing:.08em}
+  .dim-row{gap:.7rem;margin-top:.8rem}
+  .dim-tag{font-size:.78rem}
+  .terminal-text{font-size:.95rem;line-height:1.85;width:94%;max-width:420px}
+  .terminal-text .cursor{width:.58em;height:1.2em;background:#9CFFBB}
+  .terminal-cta{font-size:.8rem;letter-spacing:.25em;line-height:1.6;text-align:center;font-weight:900}
+  .terminal-cta .web-link{font-size:1.04rem;letter-spacing:.12em}
+  .live-tests{left:2%;width:96%;bottom:1.2rem}
+  .live-tests .term-bar .label{font-size:.58rem}
+  .live-tests .term-body{height:70px}
+  .live-tests .term-body .line{font-size:.62rem}
+  .bg-font{font-size:.64rem;line-height:1.8}
+  .bg-tag{font-size:.58rem;padding:.05rem .22rem}
+  .bg-card{font-size:.6rem}
+  .bg-cat{font-size:.48rem}
+}
+
+/* ── Inline BG content styles ── */
+.bg-font{font-size:.64rem;line-height:1.7;color:#7a7a9a}
+.bg-hl{color:#00ff88}
+.bg-tag{display:inline-block;background:#12121e;border:1px solid #1a1a2e;border-radius:2px;padding:.06rem .22rem;margin:.04rem;font-size:.58rem}
+.bg-card{background:#12121e;border:1px solid #1a1a2e;border-radius:3px;padding:.2rem .3rem;font-size:.6rem}
+.bg-cat{color:#4a4a6a;font-size:.48rem;text-transform:uppercase;letter-spacing:.08em;margin-top:.4rem;margin-bottom:.15rem}
+</style>
+</head>
+<body>
+
+<div class="video-container" id="app">
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+  <div class="glitch-overlay" id="glitchOverlay"></div>
+
+  <!-- ══════ BG Scene 2: estructura web/mobile ══════ -->
+  <div class="bg-texture" id="bg2">
+    <div class="blur"><div style="background:#0a0a0f;padding:2rem;width:700px" class="bg-font">
+      <span style="color:#ff79c6;font-weight:600;font-size:.48rem">web/</span><br>
+      &nbsp;&nbsp;app/<br>
+      &nbsp;&nbsp;components/ <span class="bg-hl">8</span><br>
+      &nbsp;&nbsp;pages/ <span class="bg-hl">4</span><br>
+      &nbsp;&nbsp;hooks/ <span class="bg-hl">3</span><br>
+      &nbsp;&nbsp;lib/ <span class="bg-hl">2</span><br>
+      <span style="color:#ffb86c;font-weight:600;font-size:.48rem">mobile/</span><br>
+      &nbsp;&nbsp;screens/ <span class="bg-hl">5</span><br>
+      &nbsp;&nbsp;components/ <span class="bg-hl">6</span><br>
+      &nbsp;&nbsp;services/ <span class="bg-hl">2</span><br>
+      <div style="margin-top:.5rem;color:#4a4a6a">
+        Modules: Auth · Content · Users · Media · Search · Notify · Analytics · Cache · Queue · Sync · Render · Logs · Perms · Sessions · Monitor · Webhooks · Health (17)
+      </div>
+    </div></div>
+    <div class="overlay-dark"></div>
+  </div>
+
+  <!-- ══════ BG Scene 3: db schema + enums ══════ -->
+  <div class="bg-texture" id="bg3">
+    <div class="blur"><div style="background:#0a0a0f;padding:1.5rem;width:820px;display:flex;flex-wrap:wrap;gap:.3rem" class="bg-font">
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Users</span><br>id · name · email</span>
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Profiles</span><br>id · display · avatar</span>
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Stories</span><br>id · author · title</span>
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Chapters</span><br>id · story · number</span>
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Comments</span><br>id · user · body</span>
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Genres</span><br>id · slug · label</span>
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Tags</span><br>id · name</span>
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Reactions</span><br>id · type · target</span>
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Bookmarks</span><br>id · user · story</span>
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Media</span><br>id · url · type</span>
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Notifs</span><br>id · user · type</span>
+      <span class="bg-card"><span style="color:#00ff88;font-weight:700">Reports</span><br>id · reason · status</span>
+      <div style="width:100%;margin-top:.3rem">
+        <span class="bg-tag">DRAFT</span><span class="bg-tag">PUBLISHED</span><span class="bg-tag">ARCHIVED</span>
+        <span class="bg-tag">READER</span><span class="bg-tag">CREATOR</span><span class="bg-tag">MODERATOR</span>
+        <span class="bg-tag">FANTASY</span><span class="bg-tag">SCI-FI</span><span class="bg-tag">ROMANCE</span>
+        <span class="bg-tag">PUBLIC</span><span class="bg-tag">PRIVATE</span><span class="bg-tag">FOLLOWERS</span>
+        <span class="bg-tag">LIKE</span><span class="bg-tag">LOVE</span><span class="bg-tag">LAUGH</span>
+        <span class="bg-tag">IMAGE</span><span class="bg-tag">VIDEO</span><span class="bg-tag">AUDIO</span>
+        <span class="bg-tag">SPAM</span><span class="bg-tag">ABUSE</span><span class="bg-tag">COPYRIGHT</span>
+        <span class="bg-tag">FREE</span><span class="bg-tag">PREMIUM</span><span class="bg-tag">ULTIMATE</span>
+        <span class="bg-tag">FOLLOW</span><span class="bg-tag">MENTION</span><span class="bg-tag">SYSTEM</span>
+      </div>
+    </div></div>
+    <div class="overlay-dark"></div>
+  </div>
+
+  <!-- ══════ BG Scene 4: plans + tests ══════ -->
+  <div class="bg-texture" id="bg4">
+    <div class="blur"><div style="background:#0a0a0f;padding:1.2rem;display:flex;gap:.6rem;width:880px" class="bg-font">
+      <div style="width:50%">
+        <div class="bg-cat">PLANS (76 docs)</div>
+        fase-0.5-seguridad.md<br>
+        fase1-multii18n-ui.md<br>
+        fase2-multiidioma-bbdd.md<br>
+        fase3-modo-escritura.md<br>
+        fase4-estados-capitulos.md<br>
+        fase5-equipo-invitaciones.md<br>
+        fase6-plan.md<br>
+        fase7-plan.md<br>
+        fase8-comentarios.md<br>
+        fase9-plan.md<br>
+        fase10-imagenes-cloudflare.md<br>
+        notifications-system.md<br>
+        rediseno-detalles-historia.md<br>
+        TECHNICAL.md<br>
+        FUNCTIONAL.md<br>
+        GUIDELINES.md<br>
+        FASES.md (598 lines)
+        <div style="color:#3a3a3a;margin-top:.2rem">... 59 more files</div>
+      </div>
+      <div style="width:50%">
+        <div class="bg-cat">TEST SUITE (tests)</div>
+        <span class="bg-hl">✓</span> AuthService register<br>
+        <span class="bg-hl">✓</span> AuthService login<br>
+        <span class="bg-hl">✓</span> ContentEngine create<br>
+        <span class="bg-hl">✓</span> ContentEngine publish<br>
+        <span class="bg-hl">✓</span> SearchIndex index<br>
+        <span class="bg-hl">✓</span> MediaPipeline upload<br>
+        <span class="bg-hl">✓</span> RateLimiter threshold<br>
+        <span class="bg-hl">✓</span> PermissionGuard deny<br>
+        <span class="bg-hl">✓</span> StoryModel cascade<br>
+        <span class="bg-hl">✓</span> E2E Registration<br>
+        <span class="bg-hl">✓</span> E2E Publishing<br>
+        <span class="bg-hl">✓</span> E2E Moderation<br>
+        <span class="bg-hl">✓</span> 78 passed · 0 failed
+      </div>
+    </div></div>
+    <div class="overlay-dark"></div>
+  </div>
+
+  <!-- ══════ SCENE 1 ══════ -->
+  <div class="scene active" id="scene1" style="background:#000;z-index:3">
+    <img src="../../../assets/logo.png" alt="LexikoVerse" class="logo-flash" id="logoFlash">
+    <div class="mystery-text" id="mysteryText1">
+      <span class="dim">90 days</span> since development <span class="highlight">began</span>.
+    </div>
+  </div>
+
+  <!-- ══════ SCENE 2 ══════ -->
+  <div class="scene" id="scene2">
+    <div style="text-align:center">
+      <div class="big-num green" id="num2a">2</div>
+      <div class="big-label" id="label2a">Environments</div>
+      <div class="dim-row" id="dimRow">
+        <span class="dim-tag web">WEB</span>
+        <span class="dim-tag mobile">MOBILE</span>
+      </div>
+      <div class="sub-row" id="subRow2">
+        <div class="sub-num">17</div>
+        <div class="sub-label">Control Modules</div>
+      </div>
+      <div class="sub-footer" id="footer2">Robust & reliable architecture</div>
+    </div>
+  </div>
+
+  <!-- ══════ SCENE 3 ══════ -->
+  <div class="scene" id="scene3">
+    <div style="text-align:center">
+      <div class="big-num green" id="num3a">6</div>
+      <div class="big-label" id="label3a">Team Roles</div>
+      <div class="sub-row" id="subRow3">
+        <div class="sub-num">3</div>
+        <div class="sub-label">Languages</div>
+      </div>
+      <div class="sub-footer" id="footer3">Every detail has been designed to improve performance & security</div>
+    </div>
+  </div>
+
+  <!-- ══════ SCENE 4 ══════ -->
+  <div class="scene" id="scene4">
+    <div style="text-align:center">
+      <div class="big-num green" id="num4a">60</div>
+      <div class="big-label" id="label4a">Development Phases Completed</div>
+      <div class="sub-row" id="subRow4">
+        <div class="sub-num">All</div>
+        <div class="sub-label">Tests passed...</div>
+      </div>
+      <div class="sub-footer" id="footer4">Infrastructure improvements & all backend bugs fixed</div>
+    </div>
+    <div class="live-tests" id="liveTests">
+      <div class="term-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="label">Test Runner · Executing</span>
+      </div>
+      <div class="term-body" id="testOutput"></div>
+    </div>
+  </div>
+
+  <!-- ══════ SCENE 5 ══════ -->
+  <div class="scene" id="scene5">
+    <div class="terminal-text" id="terminalLine"></div>
+    <div class="terminal-cta" id="terminalCta">More info at<br><span class="web-link">lexikoverse.com</span></div>
+  </div>
+
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+const TOTAL_DURATION = 35500;
+const progressBar = document.getElementById('progressBar');
+
+function triggerScene(from, to) {
+  document.getElementById(from).classList.remove('active');
+  document.getElementById(to).classList.add('active');
+}
+
+function flashLogo() {
+  const el = document.getElementById('logoFlash');
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+}
+
+function show(id, delay) {
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('show');
+  }, delay);
+}
+
+function glitch() {
+  const g = document.getElementById('glitchOverlay');
+  g.classList.remove('active');
+  void g.offsetWidth;
+  g.classList.add('active');
+}
+
+// ── Live test output ──
+const TEST_NAMES = [
+  'AuthService › register user','AuthService › login','AuthService › refresh token','AuthService › password reset',
+  'ContentEngine › create story','ContentEngine › publish chapter','ContentEngine › rate limits','ContentEngine › draft save',
+  'SearchIndex › index documents','SearchIndex › fuzzy search','SearchIndex › filter by genre','SearchIndex › sort by date',
+  'MediaPipeline › process uploads','MediaPipeline › resize image','MediaPipeline › convert format','MediaPipeline › validate mime',
+  'RateLimiter › block after threshold','RateLimiter › unblock after cooldown','RateLimiter › per-user quota',
+  'PermissionGuard › admin access','PermissionGuard › deny unauthorized','PermissionGuard › scope validation',
+  'UserValidator › validate email','UserValidator › validate username','UserValidator › reject injection',
+  'StoryValidator › required fields','StoryValidator › min chapter length','StoryValidator › sanitize content',
+  'User model › persist correctly','User model › soft delete','User model › cascade relations',
+  'Story model › cascade chapters','Story model › enforce status enum','Story model › search by title',
+  'Comment model › nest replies','Comment model › anchor to paragraph','Comment model › edit history',
+  'Notification › batch send','Notification › mark as read','Notification › real-time push',
+  'Migration › initial schema','Migration › rollback cleanly','Migration › seed reference data','Migration › concurrent safety',
+  'StoryCard › render correctly','StoryCard › handle click','StoryCard › lazy load image',
+  'ReaderView › paginate content','ReaderView › persist progress','ReaderView › font scaling',
+  'SearchBar › debounce input','SearchBar › clear results','SearchBar › keyboard navigation',
+  'HomeScreen › load feed','HomeScreen › infinite scroll','HomeScreen › pull to refresh',
+  'ExploreScreen › filter tags','ExploreScreen › genre carousel','ExploreScreen › trending now',
+  'LibraryScreen › sync bookmarks','LibraryScreen › offline cache','LibraryScreen › search library',
+  'Encryption › encrypt/decrypt','Encryption › invalid key handling','Encryption › key rotation',
+  'Auth › XSS prevention','Auth › CSRF prevention','Auth › SQL injection guard',
+  'RateLimiter › quota per user','RateLimiter › burst protection',
+  'Session › TTL expiry','Session › concurrent device limit',
+  'E2E › User Registration Flow','E2E › Story Publishing Flow','E2E › Comment & Notification',
+  'E2E › Subscription Purchase','E2E › Content Moderation','E2E › Data Export Flow',
+  'E2E › Account Deletion','E2E › Rate Limit Integration','E2E › Team Invitation Flow',
+];
+
+function startLiveTests() {
+  const container = document.getElementById('testOutput');
+  const liveEl = document.getElementById('liveTests');
+  liveEl.classList.add('show');
+  let idx = 0, passed = 0;
+
+  function addLine() {
+    if (idx >= TEST_NAMES.length) {
+      const s = document.createElement('div'); s.className = 'line';
+      s.innerHTML = `<span class="pass">✓ ${passed} passed</span> <span class="dim">| 0 failed</span>`;
+      container.appendChild(s); container.scrollTop = container.scrollHeight;
+      return;
+    }
+    const line = document.createElement('div'); line.className = 'line';
+    const t = Math.floor(Math.random() * 18) + 1;
+    line.innerHTML = `<span class="pass">✓</span> <span class="dim">${TEST_NAMES[idx]}</span> <span class="dim" style="font-size:.45rem">(${t}ms)</span>`;
+    container.appendChild(line); container.scrollTop = container.scrollHeight;
+    passed++; idx++;
+    setTimeout(addLine, 40 + Math.random() * 60);
+  }
+  addLine();
+}
+
+// ── Terminal (Scene 5) ──
+const TERMINAL_LINES = [
+  { text: '> STATUS_REPORT', delay: 0 },
+  { text: '> scanning subsystems...', delay: 300 },
+  { text: '> 3 languages: translated', delay: 800 },
+  { text: '> 6 roles: active', delay: 1050 },
+  { text: '> Backend modules: all online', delay: 550 },
+  { text: '> Backend dev phases: 75%', delay: 1300 },
+  { text: '> Tests: passed', delay: 1000 },
+  { text: '', delay: 500 },
+  { text: '>> STATUS: INFRASTRUCTURE_READY', delay: 1500 },
+  { text: '>> SYSTEM: LEXIKOVERSE', delay: 1800 },
+  { text: '>> NEXT: USER EXPERIENCE & UI DESIGN', delay: 2100 },
+];
+
+function startTerminal() {
+  const container = document.getElementById('terminalLine');
+  container.innerHTML = '';
+  let lineIdx = 0, to;
+
+  function nextLine() {
+    if (lineIdx >= TERMINAL_LINES.length) {
+      document.getElementById('terminalCta').classList.add('show');
+      return;
+    }
+    const line = TERMINAL_LINES[lineIdx];
+    if (line.text === '') {
+      const s = document.createElement('div'); s.innerHTML = '&nbsp;';
+      container.appendChild(s); lineIdx++;
+      to = setTimeout(nextLine, line.delay); return;
+    }
+    const el = document.createElement('div');
+    el.style.opacity = '0'; el.style.transition = 'opacity .15s ease-out';
+    el.textContent = line.text;
+    if (lineIdx === TERMINAL_LINES.length - 1) {
+      const c = document.createElement('span'); c.className = 'cursor'; el.appendChild(c);
+      const blinkStep = () => { c.classList.toggle('blinkoff'); setTimeout(blinkStep, 500); };
+      setTimeout(blinkStep, 500);
+    }
+    container.appendChild(el);
+    setTimeout(() => el.style.opacity = '1', 30);
+    lineIdx++;
+    to = setTimeout(nextLine, line.delay);
+  }
+  setTimeout(nextLine, 200);
+}
+
+// === TIMELINE ===
+function startTimeline() {
+  setTimeout(() => flashLogo(), 300);
+  show('mysteryText1', 1500);
+
+  // Scene 2 (~3.2s)
+  setTimeout(() => {
+    glitch(); document.getElementById('bg2').classList.add('show');
+    triggerScene('scene1','scene2');
+  }, 3200);
+  setTimeout(() => { show('num2a',100); show('label2a',200); show('dimRow',700); }, 3500);
+  show('subRow2', 5400);
+  show('footer2', 6200);
+
+  // Scene 3 (~9.7s)
+  setTimeout(() => {
+    glitch(); document.getElementById('bg2').classList.remove('show');
+    document.getElementById('bg3').classList.add('show');
+    triggerScene('scene2','scene3');
+  }, 9700);
+  setTimeout(() => { show('num3a',100); show('label3a',200); }, 10000);
+  show('subRow3', 11700);
+  show('footer3', 12500);
+
+  // Scene 4 (~16.1s)
+  setTimeout(() => {
+    glitch(); document.getElementById('bg3').classList.remove('show');
+    document.getElementById('bg4').classList.add('show');
+    triggerScene('scene3','scene4');
+    startLiveTests();
+  }, 16100);
+  setTimeout(() => { show('num4a',100); show('label4a',200); }, 16400);
+  show('subRow4', 18100);
+  show('footer4', 18900);
+
+  // Scene 5 (~22.6s)
+  setTimeout(() => {
+    document.getElementById('bg4').classList.remove('show');
+    triggerScene('scene4','scene5');
+    startTerminal();
+  }, 22600);
+}
+
+function animateProgress() {
+  const s = performance.now();
+  function t(now) {
+    const p = Math.min(1, (now - s) / TOTAL_DURATION);
+    progressBar.style.width = (p * 100) + '%';
+    if (p < 1) requestAnimationFrame(t);
+  }
+  requestAnimationFrame(t);
+}
+
+function animateDrift() {
+  const els = document.querySelectorAll('.bg-texture .blur');
+  const s = performance.now();
+  function d(now) {
+    const p = Math.min(1, (now - s) / TOTAL_DURATION);
+    const k = Math.sin(p * Math.PI * 4);
+    els.forEach(el => { el.style.transform = `translate(${k * -6}%, ${k * -4}%) scale(${1 + Math.abs(k) * 0.15})`; });
+    if (p < 1) requestAnimationFrame(d);
+  }
+  requestAnimationFrame(d);
+}
+
+let started = false;
+document.addEventListener('click', () => {
+  if (started) return; started = true;
+  startTimeline(); animateProgress(); animateDrift();
+});
+window.__SCENE_DURATION_MS = TOTAL_DURATION;
+
+})();
+</script>
+</body>
+</html>
